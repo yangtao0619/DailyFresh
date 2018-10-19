@@ -86,7 +86,7 @@ func sendRegisterEmail(user *models.User) error {
 	/*指定邮件的内容。该内容发送到用户的邮箱中以后，该用户打开邮箱，可以将该URL地址复制到地址栏中，敲回车键，就会向该指定的URL地址发送请求，
 	 我们在该地址对应的方法中，接收该用户的ID,然后根据该Id,查询出用户的信息后，将其对应的一个属性，Active设置为true,表明用户已经激活了，
 	 那么用户就可以登录了。*/
-	temail.HTML = "复制该连接到浏览器中激活：http://192.168.1.19:8080/active?id=" + strconv.Itoa(user.Id)
+	temail.HTML = "复制该连接到浏览器中激活：http://172.17.0.9:8089/active?id=" + strconv.Itoa(user.Id)
 	//发送邮件
 	sendErr := temail.Send()
 	if sendErr != nil {

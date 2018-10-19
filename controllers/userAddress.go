@@ -12,21 +12,20 @@ type UserCenterAddrController struct {
 }
 
 func (c *UserCenterAddrController) ShowAddAddress() {
-	username := c.GetSession("username")
+	username := GetUser(&c.Controller)
 	//获取数据,将默认地址填充到页面上
 	//北京市 海淀区 东北旺西路8号中关村软件园 （李思 收） 182****7528
 	var user models.User
-	user.Name = username.(string)
+	user.Name = username
 	newOrm := orm.NewOrm()
 	newOrm.Read(&user, "Name")
 
 	//查询地址表中id=user.Id的记录,只有一条
 	var address models.Address
 	newOrm.QueryTable("Address").Filter("User__Id", user.Id).Filter("Isdefault", true).One(&address)
-	c.Data["address"] = address.Addr + "  (" + user.Name + " 收)  " + address.Phone
+	c.Data["address"] = address.Addr + "  (" + address.Receiver + " 收)  " + address.Phone
 	beego.Info(address, user.Id)
-	c.Data["username"] = username
-	c.Layout = "layout.html"
+	c.Layout = "userCenterLayout.html"
 	c.TplName = "user_center_site.html"
 }
 
@@ -41,8 +40,7 @@ func (c *UserCenterAddrController) HandleAddAddress() {
 	if receiver == "" || detailAddr == "" || mailCode == "" || phoneNumber == "" {
 		beego.Error("输入项不能为空")
 		c.Data["errMsg"] = "输入项不能为空,请检查后重新提交"
-		c.Layout = "layout.html"
-		c.TplName = "user_center_site.html"
+		c.Redirect("/user/addDefaultAddr",302)
 		return
 	}
 	//处理数据,将数据写入数据库中
@@ -63,20 +61,20 @@ func (c *UserCenterAddrController) HandleAddAddress() {
 		beego.Error(err)
 		c.Data["errMsg"] = err
 		c.TplName = "user_center_site.html"
-		c.Layout = "layout.html"
+		c.Layout = "userCenterLayout.html"
 		return
 	}
 	_, err = newOrm.Insert(&address)
 	if err != nil {
 		beego.Error("数据插入失败")
 		c.Data["errMsg"] = "数据插入失败,请稍后重试"
-		c.Layout = "layout.html"
+		c.Layout = "userCenterLayout.html"
 		c.TplName = "user_center_site.html"
 		return
 	}
 	beego.Info("插入地址数据成功")
 	//返回视图
-	c.Redirect("/goods/addDefaultAddr", 302)
+	c.Redirect("/user/addDefaultAddr", 302)
 }
 func changeDefaultToFalse(newOrm orm.Ormer, user models.User) error {
 	var address models.Address

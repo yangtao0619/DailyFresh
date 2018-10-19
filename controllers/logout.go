@@ -9,5 +9,5 @@ type LogoutController struct {
 func (c *LogoutController) Logout() {
 	//登出的时候要删除session
 	c.DelSession("username")
-	c.Redirect("/", 302)
+	c.Redirect("/login", 302)
 }
