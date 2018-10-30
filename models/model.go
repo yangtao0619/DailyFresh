@@ -104,7 +104,6 @@ type OrderInfo struct {//订单表
 	Orderstatus 	int 	`orm:"default(1)"`	//订单状态
 	TradeNo 		string	`orm:"default('')"`	//支付编号
 	Time			time.Time `orm:"auto_now_add"`		//评论时间
-
 	OrderGoods   []*OrderGoods `orm:"reverse(many)"`
 }
 

@@ -1,12 +1,3 @@
-<div class="search_bar clearfix">
-    <a href="/" class="logo fl"><img src="../static/images/logo.png"></a>
-    <div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;用户中心</div>
-    <div class="search_con fr">
-        <input type="text" class="input_text fl" name="" placeholder="搜索商品">
-        <input type="button" class="input_btn fr" name="" value="搜索">
-    </div>
-</div>
-
 <div class="main_con clearfix">
     <div class="left_menu_con clearfix">
         <h3>用户中心</h3>
@@ -22,7 +13,7 @@
             <ul class="user_info_list">
                 <li><span>用户名：</span>{{.username}}</li>
             {{if compare .address ""}}
-                <li style="font-weight: bold ;font-size: 32px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;没有默认地址</li>
+                <li style="color: #9f9f9f ;font-size: 30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;没有默认地址</li>
             {{else}}
                 <li><span>联系方式：</span>{{.phoneNumber}}</li>
                 <li><span>联系地址：</span>{{.address}}</li>
@@ -35,15 +26,14 @@
             <ul class="goods_type_list clearfix">
             {{range .goods}}
                 <li>
-                    <a href="/showGoodsDetail?id={{.Id}}"><img src="http://212.64.52.176:8888/{{.Image}}"></a>
+                    <a href="/showGoodsDetail?id={{.Id}}"><img src="http://192.168.1.19:8888/{{.Image}}"></a>
                     <h4><a href="/showGoodsDetail?id={{.Id}}">{{.Name}}</a></h4>
                     <div class="operate">
                         <span class="prize">{{.Price}}</span>
                         <span class="unit">{{.Unite}}</span>
-                        <a href="#" class="add_goods" title="加入购物车"></a>
                     </div>
                 </li>
-                {{else}}
+            {{else}}
                 <div>没有浏览记录</div>
             {{end}}
 
@@ -51,4 +41,3 @@
         </div>
     </div>
 </div>
-

@@ -1,0 +1,52 @@
+<div class="breadcrumb">
+    <a href="#">全部分类</a>
+    <span>></span>
+    <a href="#">新鲜水果</a>
+</div>
+
+<div class="main_wrap clearfix">
+
+    <div class="r_wrap fr clearfix">
+   {{/* {{if compare (.searchResults|len) 0}}
+        <div></div>
+    {{else}}
+        <div class="sort_bar">
+        {{if compare .sort ""}}
+            <a href="/showGoodsList?id={{.typeId}}&sort=" class="active">默认</a>
+        {{else}}
+            <a href="/showGoodsList?id={{.typeId}}&sort=">默认</a>
+        {{end}}
+
+        {{if compare .sort "price"}}
+            <a href="/showGoodsList?id={{.typeId}}&sort=price" class="active">价格</a>
+        {{else}}
+            <a href="/showGoodsList?id={{.typeId}}&sort=price">价格</a>
+        {{end}}
+
+        {{if compare .sort "popularity"}}
+            <a href="/showGoodsList?id={{.typeId}}&sort=popularity" class="active">人气</a>
+        {{else}}
+            <a href="/showGoodsList?id={{.typeId}}&sort=popularity">人气</a>
+        {{end}}
+        </div>
+    {{end}}*/}}
+
+
+        <ul class="goods_type_list clearfix">
+        {{if compare (.searchResults|len) 0}}
+            <div style="font-size: 28px;color: #4e4e4e">没有搜索到商品信息</div>
+        {{else}}
+        {{range $index ,$val := .searchResults}}
+            <li>
+                <a href="/showGoodsDetail?id={{$val.Id}}"><img src="http://192.168.1.19:8888/{{$val.Image}}"></a>
+                <h4><a href="/showGoodsDetail?id={{$val.Id}}">{{$val.Name}}</a></h4>
+                <div class="operate">
+                    <span class="prize">{{$val.Price}}</span>
+                    <span class="unit">{{$val.Unite}}</span>
+                    <a href="#" class="add_goods" title="加入购物车"></a>
+                </div>
+            </li>
+        {{end}}
+        {{end}}
+    </div>
+</div>

@@ -6,6 +6,7 @@ import (
 	"dailyfresh/models"
 	"strconv"
 	"github.com/gomodule/redigo/redis"
+	"errors"
 )
 
 type UserCenterInfoController struct {
@@ -37,10 +38,11 @@ func (c *UserCenterInfoController) ShowUserInfo() {
 }
 func showViewRecords(user *models.User, c *UserCenterInfoController, newOrm *orm.Ormer) (err error) {
 	id := user.Id
-	conn, err := GetRedisConnect()
+	conn, err := redis.Dial("tcp", "192.168.1.19:6379")
 	if err != nil {
-		return err
+		err = errors.New("redis连接错误")
 	}
+	defer conn.Close()
 	beego.Info("id is", id)
 	reply, err := conn.Do("lrange", "history"+strconv.Itoa(id), 0, 4)
 	rangeResult, _ := redis.Ints(reply, err)

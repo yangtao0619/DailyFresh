@@ -11,7 +11,7 @@
             <ul>
             {{range .newGoods}}
                 <li>
-                    <a href="/showGoodsDetail?id={{.Id}}"><img src="http://212.64.52.176:8888/{{.Image}}"></a>
+                    <a href="/showGoodsDetail?id={{.Id}}"><img src="http://192.168.1.19:8888/{{.Image}}"></a>
                     <h4><a href="/showGoodsDetail?id={{.Id}}">{{.Name}}</a></h4>
                     <div class="prize">{{.Price}}</div>
                 </li>
@@ -44,25 +44,61 @@
         <ul class="goods_type_list clearfix">
         {{range .allSku}}
             <li>
-                <a href="/showGoodsDetail?id={{.Id}}"><img src="http://212.64.52.176:8888/{{.Image}}"></a>
+                <a href="/showGoodsDetail?id={{.Id}}"><img src="http://192.168.1.19:8888/{{.Image}}"></a>
                 <h4><a href="/showGoodsDetail?id={{.Id}}">{{.Name}}</a></h4>
                 <div class="operate">
                     <span class="prize">{{.Price}}</span>
                     <span class="unit">{{.Unite}}</span>
-                    <a href="#" class="add_goods" title="加入购物车"></a>
+                    <a href="javascript:;" class="add_goods" id="add_goods" title="加入购物车" skuId="{{.Id}}"></a>
                 </div>
             </li>
         {{end}}
         </ul>
 
         <div class="pagenation">
-            <a href="#">上一页</a>
-            <a href="#" class="active">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">4</a>
-            <a href="#">5</a>
-            <a href="#">下一页></a>
+            <a href="/showGoodsList?id={{.typeId}}&pageIndex={{.prePage}}">上一页</a>
+        {{range $index,$val := .pageBuffer}}
+        {{if compare $val $.pageIndex}}
+            <a href="/showGoodsList?id={{$.typeId}}&pageIndex={{$val}}" class="active">{{$val}}</a>
+        {{else}}
+            <a href="/showGoodsList?id={{$.typeId}}&pageIndex={{$val}}">{{$val}}</a>
+        {{end}}
+        {{end}}
+            <a href="/showGoodsList?id={{.typeId}}&pageIndex={{.nextPage}}">下一页></a>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    //给列表页的添加购物车按钮设置点击事件
+    $(".add_goods").click(function () {
+
+        var $add_x = $('#add_goods').offset().top;
+        var $add_y = $('#add_goods').offset().left;
+
+        var $to_x = $('#show_count').offset().top;
+        var $to_y = $('#show_count').offset().left;
+
+        let skuId = $('#add_goods').attr("skuId");
+        //得到当前的数量
+        let goodsNum = 1;
+        let params = {"skuId": skuId, "goodsNum": goodsNum};
+        $.post("/user/addCart", params, function (data) {
+            if (data.res == 8) {
+                //添加成功
+                $(".add_jump").css({'left': $add_y + 80, 'top': $add_x + 10, 'display': 'block'})
+                $(".add_jump").stop().animate({
+                            'left': $to_y + 7,
+                            'top': $to_x + 7
+                        },
+                        "fast", function () {
+                            $(".add_jump").fadeOut('fast', function () {
+                                $('#show_count').html(data.cartcount);
+                            });
+                        });
+            } else {
+                //添加失败
+                alert(data.errMsg)
+            }
+        });
+    });
+</script>

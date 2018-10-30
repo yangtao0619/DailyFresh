@@ -7,7 +7,7 @@
 </div>
 
 <div class="goods_detail_con clearfix">
-    <div class="goods_detail_pic fl"><img src="http://212.64.52.176:8888/{{.goods.Image}}"></div>
+    <div class="goods_detail_pic fl"><img src="http://192.168.1.19:8888/{{.goods.Image}}"></div>
 
     <div class="goods_detail_list fr">
         <h3>{{.goods.Name}}</h3>
@@ -27,7 +27,7 @@
         <div class="total">总价：<em>{{.goods.Price}}</em></div>
         <div class="operate_btn">
             <a href="javascript:;" class="buy_btn">立即购买</a>
-            <a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
+            <a href="javascript:;" class="add_cart" id="add_cart" skuId="{{.goods.Id}}">加入购物车</a>
         </div>
     </div>
 </div>
@@ -39,7 +39,7 @@
             <ul>
             {{range .newGoods}}
                 <li>
-                    <a href="/showGoodsDetail?id={{.Id}}"><img src="http://212.64.52.176:8888/{{.Image}}"></a>
+                    <a href="/showGoodsDetail?id={{.Id}}"><img src="http://192.168.1.19:8888/{{.Image}}"></a>
                     <h4><a href="/showGoodsDetail?id={{.Id}}">{{.Name}}</a></h4>
                     <div class="prize">{{.Price}}</div>
                 </li>
@@ -66,18 +66,85 @@
 
     </div>
 </div>
+<script type="text/javascript">
+    SetAmountPrice();
+    $(".add").click(function () {
+        //加1操作
+        let num = $(".num_show").val();
+        num = parseInt(num);
+        num = num + 1;
+        $(".num_show").val(num);
+        SetAmountPrice();
+    });
+    $(".minus").click(function () {
+        //加1操作
+        let num = $(".num_show").val();
+        num = parseInt(num);
+        num = num - 1;
+        if (num < 1) {
+            num = 1;
+        }
+        $(".num_show").val(num);
+        SetAmountPrice();
+    });
+    $(".num_show").blur(function () {
+        //当失去焦点的时候,重新计算总价
+        let num = $(".num_show").val();
+        if (parseInt(num) < 1 || isNaN(num) || num.trim().length == 0) {
+            num = 1;
+            $(".num_show").val(num);
+        }
+        SetAmountPrice();
+    });
 
-<div class="footer">
-    <div class="foot_link">
-        <a href="#">关于我们</a>
-        <span>|</span>
-        <a href="#">联系我们</a>
-        <span>|</span>
-        <a href="#">招聘人才</a>
-        <span>|</span>
-        <a href="#">友情链接</a>
-    </div>
-    <p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
-    <p>电话：010-****888 京ICP备*******8号</p>
-</div>
-<div class="add_jump"></div>
+    function SetAmountPrice() {
+        //详情页加减商品的js代码
+        //获取商品的数量和单价
+        let num = $(".num_show").val();
+        let price = $(".show_pirze").children("em").text();
+        console.log("num is", num, "price is", price);
+        //转换价格和数量
+        num = parseInt(num);
+        price = parseInt(price);
+        console.log("num is", num, "price is", price);
+        //计算总价
+        let amount = num * price;
+        //设置总价
+        $(".total").children("em").text(amount + "元");
+    }
+
+    //给添加购物车按钮设置点击事件,点击的时候发起ajax请求将数据存入redis中
+    $(".add_cart").click(function () {
+
+        var $add_x = $('#add_cart').offset().top;
+        var $add_y = $('#add_cart').offset().left;
+
+        var $to_x = $('#show_count').offset().top;
+        var $to_y = $('#show_count').offset().left;
+
+
+        let skuId = $('#add_cart').attr("skuId");
+        //得到当前的数量
+        let goodsNum = $(".num_show").val();
+        let params = {"skuId": skuId, "goodsNum": goodsNum};
+        $.post("/user/addCart", params, function (data) {
+            if (data.res === 8) {
+                //添加成功
+                $(".add_jump").css({'left': $add_y + 80, 'top': $add_x + 10, 'display': 'block'});
+                $(".add_jump").stop().animate({
+                            'left': $to_y + 7,
+                            'top': $to_x + 7
+                        },
+                        "fast", function () {
+                            $(".add_jump").fadeOut('fast', function () {
+                                $('#show_count').html(data.cartcount);
+                            });
+                        });
+            } else if (data.res > 0) {
+                alert(data.errMsg);
+            } else {
+                alert("请先登录!");
+            }
+        });
+    });
+</script>

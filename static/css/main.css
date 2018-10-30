@@ -1377,12 +1377,14 @@ html, body {
     float: right;
 }
 
-.settlements .col04 a {
+.settlements .col04 input {
     display: block;
     height: 78px;
+    border: #00bc6f solid 0;
     background-color: #ff3d3d;
     text-align: center;
     line-height: 78px;
+    width: 180px;
     color: #fff;
     font-size: 24px
 }

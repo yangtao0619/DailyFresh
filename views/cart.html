@@ -1,109 +1,246 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<title>天天生鲜-购物车</title>
-	<link rel="stylesheet" type="text/css" href="../static/css/reset.css">
-	<link rel="stylesheet" type="text/css" href="../static/css/main.css">
-</head>
-<body>
-	<div class="header_con">
-		<div class="header">
-			<div class="welcome fl">欢迎来到天天生鲜!</div>
-			<div class="fr">
-				<div class="login_info fl">
-					欢迎您：<em>张 山</em>
-				</div>
-				<div class="login_btn fl">
-					<a href="login.html">登录</a>
-					<span>|</span>
-					<a href="register.html">注册</a>
-				</div>
-				<div class="user_link fl">
-					<span>|</span>
-					<a href="user_center_info.html">用户中心</a>
-					<span>|</span>
-					<a href="cart.html">我的购物车</a>
-					<span>|</span>
-					<a href="user_center_order.html">我的订单</a>
-				</div>
-			</div>
-		</div>		
-	</div>
+<div class="total_count">全部商品<em>{{.totalNum}}</em>件</div>
+<ul class="cart_list_th clearfix">
+    <li class="col01">商品名称</li>
+    <li class="col02">商品单位</li>
+    <li class="col03">商品价格</li>
+    <li class="col04">数量</li>
+    <li class="col05">小计</li>
+    <li class="col06">操作</li>
+</ul>
+<form method="post" action="/user/showOrder">
+{{range .dataSlice}}
+    <ul class="cart_list_td clearfix">
+        <li class="col01"><input type="checkbox" name="skuId" value="{{.goods.Id}}" checked></li>
+        <li class="col02"><img src="http://192.168.1.19:8888/{{.goods.Image}}"></li>
+        <li class="col03">{{.goods.Name}}<br><em>{{.goods.Price}}元/{{.goods.Unite}}</em></li>
+        <li class="col04">{{.goods.Unite}}</li>
+        <li class="col05">{{.goods.Price}}元</li>
+        <li class="col06">
+            <div class="num_add">
+                <a href="javascript:;" class="add fl">+</a>
+                <input type="text" class="num_show fl" skuId="{{.goods.Id}}" preValue="{{.num}}" value="{{.num}}">
+                <a href="javascript:;" class="minus fl">-</a>
+            </div>
+        </li>
+        <li class="col07">{{.subtotal}}元</li>
+        <li class="col08"><a href="javascript:;">删除</a></li>
+    </ul>
+{{end}}
+    <ul class="settlements">
+        <li class="col01"><input type="checkbox" name="" checked=""></li>
+        <li class="col02">全选</li>
+        <li class="col03">合计(不含运费)：<span>¥</span><em>{{.totalPrice}}</em><br>共计<b>{{.totalNum}}</b>件商品</li>
+        <li class="col04"><input type="submit" value="去结算" style="border: #9f9f9f solid 0;width: 170px"></li>
+    </ul>
+</form>
+<script type="text/javascript">
+    updateTotalPriceeAndNum();
 
-	<div class="search_bar clearfix">
-		<a href="index.html" class="logo fl"><img src="../static/images/logo.png"></a>
-		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;购物车</div>
-		<div class="search_con fr">
-			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
-			<input type="button" class="input_btn fr" name="" value="搜索">
-		</div>		
-	</div>
+    //创建一个函数,当状态改变的时候更新总件数和总价格
+    function updateTotalPriceeAndNum() {
+        //获取所有选中状态的item
+        let totalNum = 0;
+        let totalPrice = 0;
+        $(".cart_list_td").find(":checked").parents("ul").each(function () {
+            //得到每个条目里面的价格总和
+            let num = $(this).find(".num_show").val();
+            let count = $(this).children(".col07").text();
+            totalNum += parseInt(num);
+            totalPrice += parseInt(count);
+        });
+        $(".settlements").find("em").text(totalPrice);
+        $(".settlements").find("b").text(totalNum);
 
-	<div class="total_count">全部商品<em>2</em>件</div>	
-	<ul class="cart_list_th clearfix">
-		<li class="col01">商品名称</li>
-		<li class="col02">商品单位</li>
-		<li class="col03">商品价格</li>
-		<li class="col04">数量</li>
-		<li class="col05">小计</li>
-		<li class="col06">操作</li>
-	</ul>
-	<ul class="cart_list_td clearfix">
-		<li class="col01"><input type="checkbox" name="" checked></li>
-		<li class="col02"><img src="../static/images/goods/goods012.jpg"></li>
-		<li class="col03">奇异果<br><em>25.80元/500g</em></li>
-		<li class="col04">500g</li>
-		<li class="col05">25.80元</li>
-		<li class="col06">
-			<div class="num_add">
-				<a href="javascript:;" class="add fl">+</a>
-				<input type="text" class="num_show fl" value="1">	
-				<a href="javascript:;" class="minus fl">-</a>	
-			</div>
-		</li>
-		<li class="col07">25.80元</li>
-		<li class="col08"><a href="javascript:;">删除</a></li>
-	</ul>
+        //不管有没有选中都计数
+        let allNum = 0;
+        $(".cart_list_td").find(".col02").parents("ul").each(function () {
+            //得到每个条目里面的价格总和
+            let num = $(this).find(".num_show").val();
+            allNum += parseInt(num);
+        });
+        $(".total_count").children("em").text(allNum);
+        //给购物车旁边的图标设置数字
+        $(".goods_count").text(allNum);
+    }
 
-	<ul class="cart_list_td clearfix">
-		<li class="col01"><input type="checkbox" name="" checked></li>
-		<li class="col02"><img src="../static/images/goods/goods003.jpg"></li>
-		<li class="col03">大兴大棚草莓<br><em>16.80元/500g</em></li>
-		<li class="col04">500g</li>
-		<li class="col05">16.80元</li>
-		<li class="col06">
-			<div class="num_add">
-				<a href="javascript:;" class="add fl">+</a>
-				<input type="text" class="num_show fl" value="1">	
-				<a href="javascript:;" class="minus fl">-</a>	
-			</div>
-		</li>
-		<li class="col07">16.80元</li>
-		<li class="col08"><a href="javascript:;">删除</a></li>
-	</ul>
-	
+    //当全选和全不选的时候调用的方法
+    $(".settlements").find(":checkbox").click(function () {
+        let isChecked = $(this).prop("checked");
+        $(".cart_list_td").find(":checkbox").each(function () {
+            $(this).prop("checked", isChecked);
+        });
+        updateTotalPriceeAndNum();
+    });
+    //当触发每个条目的点击事件的时候更新总件数和价格
+    $(".cart_list_td").find(":checkbox").click(function () {
+        //更新数据即可
+        updateTotalPriceeAndNum();
+        //更改显示之后需要判断是否要更改全选状态
+        let checkNum = $(".cart_list_td").find(":checked").length;
+        let ulNum = $(".cart_list_td").length;
+        if (checkNum == ulNum) {
+            $(".settlements").find(":checkbox").prop("checked", true);
+        } else {
+            $(".settlements").find(":checkbox").prop("checked", false);
+        }
+    });
 
-	<ul class="settlements">
-		<li class="col01"><input type="checkbox" name="" checked=""></li>
-		<li class="col02">全选</li>
-		<li class="col03">合计(不含运费)：<span>¥</span><em>42.60</em><br>共计<b>2</b>件商品</li>
-		<li class="col04"><a href="place_order.html">去结算</a></li>
-	</ul>
+    //给加号,减号和输入框的失去焦点事件添加监听器,同时还要发起ajax请求,写入数据库中
+    $(".add").click(function () {
+        //获取当前框内的数值
+        let currentNum = $(this).next().val();
+        let setNum = parseInt(currentNum) + 1;
+        let skuId = $(this).next().attr("skuId");
+        //发起一次ajax请求获得要设置的数量
+        let params = {"skuId": skuId, "setNum": setNum};
+        let errUpdate = false;
+        $.ajaxSettings.async = false;
+        $.post("/user/updateCart", params, function (data) {
+            if (data.respCode === 6) {
+                errUpdate = false;
+                setNum = data.setNum;
+                console.log("setNum is", setNum)
+            } else if (data.respCode === 5) {
+                errUpdate = false;
+                setNum = data.setNum;
+                alert(data.errMsg);
+            } else if (data.respCode > 0) {
+                errUpdate = true;
+                alert(data.errMsg);
+            } else {
+                errUpdate = true;
+                alert("请先登录!");
+            }
+        });
+        $.ajaxSettings.async = true;
+        if (!errUpdate) {
+            $(this).next().val(setNum);
+            let price = parseInt($(this).parent().parent().parent().find("li.col05").text());
+            let subTotal = setNum * price;
+            $(this).parent().parent().parent().find("li.col07").text(subTotal + "元");
+            updateTotalPriceeAndNum();
+        }
+    });
+    //购物车商品减去
+    $(".minus").click(function () {
+        //获取当前框内的数值
+        let currentNum = $(this).prev().val();
+        let setNum = parseInt(currentNum) - 1;
+        if (setNum < 1) {
+            setNum = 1;
+        }
+        console.log("val is", currentNum);
+        let skuId = $(this).prev().attr("skuId");
+        //发起一次ajax请求获得要设置的数量
+        let params = {"skuId": skuId, "setNum": setNum};
+        let errUpdate = false;
+        $.ajaxSettings.async = false;
 
-	<div class="footer">
-		<div class="foot_link">
-			<a href="#">关于我们</a>
-			<span>|</span>
-			<a href="#">联系我们</a>
-			<span>|</span>
-			<a href="#">招聘人才</a>
-			<span>|</span>
-			<a href="#">友情链接</a>		
-		</div>
-		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
-		<p>电话：010-****888    京ICP备*******8号</p>
-	</div>
-	
-</body>
-</html>
+        $.post("/user/updateCart", params, function (data) {
+            if (data.respCode === 6) {
+                errUpdate = false;
+                setNum = data.setNum;
+                console.log("setNum is", setNum)
+            } else if (data.respCode === 5) {
+                errUpdate = false;
+                setNum = data.setNum;
+                alert(data.errMsg);
+            } else if (data.respCode > 0) {
+                errUpdate = true;
+                alert(data.errMsg);
+            } else {
+                errUpdate = true;
+                alert("请先登录!");
+            }
+        });
+        $.ajaxSettings.async = true;
+        if (!errUpdate) {
+
+            if (setNum < 1) {
+                setNum = 1;
+            }
+            $(this).prev().val(setNum);
+
+            let price = parseInt($(this).parent().parent().parent().find("li.col05").text());
+            let subTotal = setNum * price;
+            $(this).parent().parent().parent().find("li.col07").text(subTotal + "元");
+
+            updateTotalPriceeAndNum();
+        }
+    });
+    //购物车商品数量变更
+    $(".num_show").blur(function () {
+        let setNum = $(this).val();
+        let preValue = parseInt($(this).attr("preValue"));
+        if (isNaN(setNum) || setNum.trim() === "") {
+            $(this).val(preValue);
+            return
+        }
+        if (setNum < 1) {
+            setNum = 1;
+        }
+        let skuId = $(this).attr("skuId");
+        //发起一次ajax请求获得要设置的数量
+        let params = {"skuId": skuId, "setNum": setNum};
+        let errUpdate = false;
+        $.ajaxSettings.async = false;
+
+        $.post("/user/updateCart", params, function (data) {
+            if (data.respCode === 6) {
+                errUpdate = false;
+                setNum = data.setNum;
+                console.log("setNum is", setNum)
+            } else if (data.respCode === 5) {
+                errUpdate = false;
+                setNum = data.setNum;
+                alert(data.errMsg);
+            } else if (data.respCode > 0) {
+                errUpdate = true;
+                alert(data.errMsg);
+            } else {
+                errUpdate = true;
+                alert("请先登录!");
+            }
+        });
+        $.ajaxSettings.async = true;
+        if (!errUpdate) {
+            $(this).val(setNum);
+            $(this).attr("preValue", setNum);
+            let price = parseInt($(this).parent().parent().parent().find("li.col05").text());
+            let subTotal = setNum * price;
+            $(this).parent().parent().parent().find("li.col07").text(subTotal + "元");
+            updateTotalPriceeAndNum();
+        }
+    });
+    $(".col08").click(function () {
+        let skuId = parseInt($(this).parents("ul").find(".num_show").attr("skuId"));
+        console.log("skuid is", skuId);
+        if (confirm("确认删除吗?")) {
+            console.log("确认");
+            //发起ajax请求,从redis数据库删除这个字段
+            let params = {"skuId": skuId};
+            let parent = $(this).parent();
+            let errUpdate = false;
+            $.ajaxSettings.async = false;
+            $.post("/user/deleteGoodsFromCart", params, function (data) {
+                if (data.errId === 6) {
+                    errUpdate = false;
+                } else {
+                    errUpdate = true;
+                }
+            });
+
+            $.ajaxSettings.async = true;
+            if (!errUpdate) {
+                parent.remove();
+                updateTotalPriceeAndNum();
+            } else {
+                alert("删除失败!" + data.errMsg);
+            }
+
+        } else {
+            console.log("算了吧!");
+        }
+    });
+
+</script>

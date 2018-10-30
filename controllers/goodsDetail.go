@@ -40,6 +40,7 @@ func (c *GoodsDetailController) ShowDetail() {
 	if err != nil {
 		beego.Error(err)
 	}
+
 	c.TplName = "detail.html"
 }
 func recordView(c *GoodsDetailController, newOmer *orm.Ormer, goodsId int) error {
@@ -47,11 +48,14 @@ func recordView(c *GoodsDetailController, newOmer *orm.Ormer, goodsId int) error
 	userName := c.GetSession("username")
 	var user models.User
 	//需要先判断用户是否已经登录,只有登录之后才需要写入
-
+	conn, err := redis.Dial("tcp", "192.168.1.19:6379")
+	if err != nil {
+		return errors.New("redis连接错误")
+	}
+	defer conn.Close()
 	if userName != nil {
 		user.Name = userName.(string)
 		//key是用户的id,value是浏览的商品的id
-		conn, err := GetRedisConnect()
 		if err != nil {
 			return errors.New("redis连接出错")
 		}
@@ -71,15 +75,8 @@ func recordView(c *GoodsDetailController, newOmer *orm.Ormer, goodsId int) error
 			return errors.New("插入数据失败")
 		}
 	}
+	count := GetGoodsCount(conn, user.Id)
+	c.Data["goodsCount"] = count
 	beego.Info("goodId is", goodsId, "userId is", user.Id)
 	return nil
-}
-
-func ShowTypeAndGetUserInfo(c *beego.Controller) {
-	//查找类型数据
-	var types []models.GoodsType
-	ormer := orm.NewOrm()
-	ormer.QueryTable("GoodsType").All(&types)
-	c.Data["types"] = types
-	c.Layout = "goodLayout.html"
 }
