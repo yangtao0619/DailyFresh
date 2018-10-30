@@ -37,7 +37,7 @@ func (c *OrderShowController) HandleShowOrderCart() {
 	}
 	//将前台需要的数据存储到map集合中
 	skuDatas := make([]map[string]interface{}, 0)
-	conn, err := redis.Dial("tcp", "192.168.1.19:6379")
+	conn, err := redis.Dial("tcp", "212.64.52.176:6379")
 	if err != nil {
 		beego.Error("连接redis失败")
 		c.Redirect("/user/showUserCart", 302)

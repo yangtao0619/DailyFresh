@@ -76,8 +76,8 @@ func aliPay(c *PayController) {
 	orderId := c.GetString("orderId")
 	totalPrice := c.GetString("totalPrice")
 	var p = alipay.AliPayTradePagePay{}
-	p.NotifyURL = "http://192.168.1.19:8088/user/payOk"
-	p.ReturnURL = "http://192.168.1.19:8088/user/payOk"
+	p.NotifyURL = "http://212.64.52.176:8088/user/payOk"
+	p.ReturnURL = "http://212.64.52.176:8088/user/payOk"
 	p.Subject = "天天生鲜支付"
 	p.OutTradeNo = orderId
 	p.TotalAmount = totalPrice

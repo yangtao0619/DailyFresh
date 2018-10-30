@@ -38,7 +38,7 @@ func (c *UserCenterInfoController) ShowUserInfo() {
 }
 func showViewRecords(user *models.User, c *UserCenterInfoController, newOrm *orm.Ormer) (err error) {
 	id := user.Id
-	conn, err := redis.Dial("tcp", "192.168.1.19:6379")
+	conn, err := redis.Dial("tcp", "212.64.52.176:6379")
 	if err != nil {
 		err = errors.New("redis连接错误")
 	}

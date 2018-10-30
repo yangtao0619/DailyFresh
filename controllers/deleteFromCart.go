@@ -23,7 +23,7 @@ func (c *DeleteFromCartController) HandleDeleteFromCart() {
 		c.Data["json"] = resp
 		return
 	}
-	conn, err := redis.Dial("tcp", "192.168.1.19:6379")
+	conn, err := redis.Dial("tcp", "212.64.52.176:6379")
 	if err != nil {
 		resp["errId"] = 2
 		resp["reeMsg"] = "连接redis数据库失败"

@@ -26,7 +26,7 @@ func (c *UserCartController) ShowUserCart() {
 	}
 	var dataSlice []map[string]interface{}
 	//需要传递的数据,查询redis,有几个field切片就有多大
-	conn, err := redis.Dial("tcp", "192.168.1.19:6379")
+	conn, err := redis.Dial("tcp", "212.64.52.176:6379")
 	if err != nil {
 		beego.Error("redis连接错误")
 		c.Redirect("/", 302)

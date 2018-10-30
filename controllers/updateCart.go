@@ -70,7 +70,7 @@ func (c *UpdateCartController) HandleUpdateCart() {
 		setNum = requestNum
 	}
 	//将数据存储到数据库中
-	conn, err := redis.Dial("tcp", "192.168.1.19:6379")
+	conn, err := redis.Dial("tcp", "212.64.52.176:6379")
 	if err != nil {
 		err = errors.New("redis连接错误")
 		resp["respCode"] = 7

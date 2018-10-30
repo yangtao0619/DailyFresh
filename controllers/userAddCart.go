@@ -64,7 +64,7 @@ func (c *UserAddCartController) HandleUserAddCart() {
 		c.Data["json"] = resp
 		return
 	}
-	conn, err := redis.Dial("tcp", "192.168.1.19:6379")
+	conn, err := redis.Dial("tcp", "212.64.52.176:6379")
 	if err != nil {
 		beego.Error("连接数据库失败!")
 		resp["res"] = 6

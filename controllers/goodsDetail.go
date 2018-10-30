@@ -48,7 +48,7 @@ func recordView(c *GoodsDetailController, newOmer *orm.Ormer, goodsId int) error
 	userName := c.GetSession("username")
 	var user models.User
 	//需要先判断用户是否已经登录,只有登录之后才需要写入
-	conn, err := redis.Dial("tcp", "192.168.1.19:6379")
+	conn, err := redis.Dial("tcp", "212.64.52.176:6379")
 	if err != nil {
 		return errors.New("redis连接错误")
 	}

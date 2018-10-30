@@ -20,7 +20,7 @@
     <div class="slide fl">
         <ul class="slide_pics">
         {{range .bannerGoods}}
-            <li><img src="http://192.168.1.19:8888/{{.Image}}" alt="幻灯片"></li>
+            <li><img src="http://212.64.52.176:8888/{{.Image}}" alt="幻灯片"></li>
         {{end}}
         </ul>
         <div class="prev"></div>
@@ -29,7 +29,7 @@
     </div>
     <div class="adv fl">
     {{range .promotionGoods}}
-        <a href="{{.Url}}"><img src="http://192.168.1.19:8888/{{.Image}}"></a>
+        <a href="{{.Url}}"><img src="http://212.64.52.176:8888/{{.Image}}"></a>
     {{end}}
     </div>
 </div>
@@ -48,12 +48,12 @@
     </div>
 
     <div class="goods_con clearfix">
-        <div class="goods_banner fl"><img src="http://192.168.1.19:8888/{{.type.Image}}"></div>
+        <div class="goods_banner fl"><img src="http://212.64.52.176:8888/{{.type.Image}}"></div>
         <ul class="goods_list fl">
         {{range .picGoods}}
             <li>
                 <h4><a href="/showGoodsDetail?id={{.GoodsSKU.Id}}">{{.GoodsSKU.Name}}</a></h4>
-                <a href="/showGoodsDetail?id={{.GoodsSKU.Id}}"><img src="http://192.168.1.19:8888/{{.GoodsSKU.Image}}"></a>
+                <a href="/showGoodsDetail?id={{.GoodsSKU.Id}}"><img src="http://212.64.52.176:8888/{{.GoodsSKU.Image}}"></a>
                 <div class="prize">¥ {{.GoodsSKU.Price}}</div>
             </li>
         {{end}}

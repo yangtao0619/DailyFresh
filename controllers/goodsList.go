@@ -37,7 +37,7 @@ func (c *GoodsListController) ShowGoodsList() {
 }
 
 func showCartNum(err error, userName string, newOrm orm.Ormer, c *GoodsListController) int {
-	conn, err := redis.Dial("tcp", "192.168.1.19:6379")
+	conn, err := redis.Dial("tcp", "212.64.52.176:6379")
 	if err != nil {
 		beego.Error("redis连接错误")
 		c.Redirect("/", 302)

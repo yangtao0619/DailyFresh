@@ -75,7 +75,7 @@ func (c *OrderPostController) HandlePostOrderCart() {
 	orderInfo.TransitPrice = transitPrice
 	newOrm.Insert(&orderInfo)
 	//订单商品数据写入订单商品表
-	conn, err := redis.Dial("tcp", "192.168.1.19:6379")
+	conn, err := redis.Dial("tcp", "212.64.52.176:6379")
 	if err != nil {
 		resp["respCode"] = 5
 		resp["errMsg"] = "redis连接错误"
